@@ -87,6 +87,7 @@ set(rviz_default_plugins_headers_to_moc
   include/rviz_default_plugins/displays/image/image_display.hpp
   include/rviz_default_plugins/displays/laser_scan/laser_scan_display.hpp
   include/rviz_default_plugins/displays/map/map_display.hpp
+  include/rviz_default_plugins/displays/map/map_palette_panel.hpp
   include/rviz_default_plugins/displays/marker/marker_common.hpp
   include/rviz_default_plugins/displays/odometry/odometry_display.hpp
   include/rviz_default_plugins/transformation/transformer_guard.hpp
@@ -147,6 +148,7 @@ set(rviz_default_plugins_source_files
   src/rviz_default_plugins/displays/interactive_markers/interactive_marker_namespace_property.cpp
   src/rviz_default_plugins/displays/laser_scan/laser_scan_display.cpp
   src/rviz_default_plugins/displays/map/map_display.cpp
+  src/rviz_default_plugins/displays/map/map_palette_panel.cpp
   src/rviz_default_plugins/displays/map/palette_builder.cpp
   src/rviz_default_plugins/displays/map/swatch.cpp
   src/rviz_default_plugins/displays/marker/markers/arrow_marker.cpp

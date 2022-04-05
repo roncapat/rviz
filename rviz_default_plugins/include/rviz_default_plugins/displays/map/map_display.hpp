@@ -54,6 +54,8 @@
 
 #include "rviz_default_plugins/displays/map/swatch.hpp"
 #include "rviz_default_plugins/visibility_control.hpp"
+#include "rviz_default_plugins/displays/map/map_palette_panel.hpp"
+
 
 namespace Ogre
 {
@@ -161,8 +163,10 @@ protected:
     int number_swatches);
   size_t getEffectiveDimension(size_t map_dimension, size_t swatch_dimension, size_t position);
   void updateSwatches() const;
+  void setupRenderPanel();
 
   std::vector<std::shared_ptr<Swatch>> swatches_;
+  std::vector<std::vector<unsigned char>> palettes_, palettes_binary_;
   std::vector<Ogre::TexturePtr> palette_textures_, palette_textures_binary_;
   std::vector<bool> color_scheme_transparency_;
   bool loaded_;
@@ -189,6 +193,8 @@ protected:
   rviz_common::properties::BoolProperty * transform_timestamp_property_;
   rviz_common::properties::BoolProperty * binary_view_property_;
   rviz_common::properties::IntProperty * binary_threshold_property_;
+
+  std::unique_ptr<rviz_default_plugins::panels::MapPalettePanel> render_panel_;
 
   uint32_t update_messages_received_;
 };

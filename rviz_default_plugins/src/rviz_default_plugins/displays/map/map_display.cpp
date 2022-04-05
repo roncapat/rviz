@@ -179,11 +179,14 @@ MapDisplay::MapDisplay(rviz_common::DisplayContext * context)
   scene_manager_ = context->getSceneManager();
   scene_node_ = scene_manager_->getRootSceneNode()->createChildSceneNode();
 
-  palette_textures_.push_back(makePaletteTexture(makeMapPalette()));
+  palettes_.push_back(makeMapPalette());
+  palette_textures_.push_back(makePaletteTexture(palettes_.back()));
   color_scheme_transparency_.push_back(false);
-  palette_textures_.push_back(makePaletteTexture(makeCostmapPalette()));
+  palettes_.push_back(makeCostmapPalette());
+  palette_textures_.push_back(makePaletteTexture(palettes_.back()));
   color_scheme_transparency_.push_back(true);
-  palette_textures_.push_back(makePaletteTexture(makeRawPalette()));
+  palettes_.push_back(makeRawPalette());
+  palette_textures_.push_back(makePaletteTexture(palettes_.back()));
   color_scheme_transparency_.push_back(true);
 }
 
@@ -200,23 +203,41 @@ void MapDisplay::onInitialize()
     });
   int threshold = binary_threshold_property_->getInt();
   // Order of palette textures here must match option indices for color_scheme_property_ above.
-  palette_textures_.push_back(makePaletteTexture(makeMapPalette()));
-  palette_textures_binary_.push_back(makePaletteTexture(makeMapPalette(true, threshold)));
+  palettes_.push_back(makeMapPalette());
+  palettes_binary_.push_back(makeMapPalette(true, threshold));
+  palette_textures_.push_back(makePaletteTexture(palettes_.back()));
+  palette_textures_binary_.push_back(makePaletteTexture(palettes_binary_.back()));
   color_scheme_transparency_.push_back(false);
-  palette_textures_.push_back(makePaletteTexture(makeCostmapPalette()));
-  palette_textures_binary_.push_back(makePaletteTexture(makeCostmapPalette(true, threshold)));
+  palettes_.push_back(makeCostmapPalette());
+  palettes_binary_.push_back(makeCostmapPalette(true, threshold));
+  palette_textures_.push_back(makePaletteTexture(palettes_.back()));
+  palette_textures_binary_.push_back(makePaletteTexture(palettes_binary_.back()));
   color_scheme_transparency_.push_back(true);
-  palette_textures_.push_back(makePaletteTexture(makeRawPalette()));
-  palette_textures_binary_.push_back(makePaletteTexture(makeRawPalette(true, threshold)));
+  palettes_.push_back(makeRawPalette());
+  palettes_binary_.push_back(makeRawPalette(true, threshold));
+  palette_textures_.push_back(makePaletteTexture(palettes_.back()));
+  palette_textures_binary_.push_back(makePaletteTexture(palettes_binary_.back()));
   color_scheme_transparency_.push_back(true);
+  setupRenderPanel();
+}
+
+void MapDisplay::setupRenderPanel()
+{
+  render_panel_ = std::make_unique<rviz_default_plugins::panels::MapPalettePanel>();
+  render_panel_->resize(640, 480);
+  render_panel_->initialize(context_);
+  setAssociatedWidget(render_panel_.get());
 }
 
 void MapDisplay::updateBinaryThreshold()
 {
   int threshold = binary_threshold_property_->getInt();
-  palette_textures_binary_[0] = makePaletteTexture(makeMapPalette(true, threshold));
-  palette_textures_binary_[1] = makePaletteTexture(makeCostmapPalette(true, threshold));
-  palette_textures_binary_[2] = makePaletteTexture(makeRawPalette(true, threshold));
+  palettes_binary_[0] = makeMapPalette(true, threshold);
+  palettes_binary_[1] = makeCostmapPalette(true, threshold);
+  palettes_binary_[2] = makeRawPalette(true, threshold);
+  palette_textures_binary_[0] = makePaletteTexture(palettes_binary_[0]);
+  palette_textures_binary_[1] = makePaletteTexture(palettes_binary_[1]);
+  palette_textures_binary_[2] = makePaletteTexture(palettes_binary_[2]);
 }
 
 void MapDisplay::updateTopic()
@@ -599,7 +620,6 @@ void MapDisplay::updateSwatches() const
 void MapDisplay::updatePalette()
 {
   bool binary = binary_view_property_->getBool();
-
   int palette_index = color_scheme_property_->getOptionInt();
 
   for (const auto & swatch : swatches_) {
@@ -610,7 +630,7 @@ void MapDisplay::updatePalette()
     } else {
       palette_tex_unit = pass->createTextureUnitState();
     }
-    if (binary){
+    if (binary) {
       palette_tex_unit->setTexture(palette_textures_binary_[palette_index]);
     } else {
       palette_tex_unit->setTexture(palette_textures_[palette_index]);
@@ -620,6 +640,11 @@ void MapDisplay::updatePalette()
 
   updateAlpha();
   updateDrawUnder();
+  if (binary) {
+    render_panel_->setPalette(palettes_binary_[palette_index]);
+  } else {
+    render_panel_->setPalette(palettes_[palette_index]);
+  }
 }
 
 void MapDisplay::transformMap()
