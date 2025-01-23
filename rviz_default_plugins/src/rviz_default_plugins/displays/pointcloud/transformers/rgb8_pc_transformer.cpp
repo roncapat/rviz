@@ -29,6 +29,7 @@
 
 
 #include <algorithm>
+#include <array>
 
 #include "rviz_default_plugins/displays/pointcloud/point_cloud_helpers.hpp"
 
