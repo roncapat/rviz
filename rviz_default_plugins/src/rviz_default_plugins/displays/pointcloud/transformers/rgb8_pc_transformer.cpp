@@ -77,12 +77,12 @@ bool RGB8PCTransformer::transform(
 
   // Create a look-up table for colors
   constexpr static std::array<float,256> rgb_lut = [](){
-    std::array<float, 256> result{};
-    for (int i = 0; i < 256; ++i) {
-      result[i] = static_cast<float>(i) / 255.0f;
-    }
-    return result;
-  }();
+      std::array<float, 256> result{};
+      for (int i = 0; i < 256; ++i) {
+        result[i] = static_cast<float>(i) / 255.0f;
+      }
+      return result;
+    }();
 
   if (rgb != -1) {  // rgb
     for (V_PointCloudPoint::iterator iter = points_out.begin(); iter != points_out.end();
