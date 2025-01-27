@@ -31,7 +31,11 @@
 #ifndef RVIZ_COMMON__ROS_ADAPTER_DISPLAY_HPP_
 #define RVIZ_COMMON__ROS_ADAPTER_DISPLAY_HPP_
 
+#include <cstdint>
+#include <functional>
 #include <memory>
+#include <sstream>
+#include <stdexcept>
 #include <string>
 
 #include <QString>  // NOLINT: cpplint is unable to handle the include order here
@@ -39,6 +43,10 @@
 #include "rviz_common/ros_topic_display.hpp"
 
 #include "rclcpp/qos.hpp"
+#include "rclcpp/node.hpp"
+#include "rclcpp/subscription_options.hpp"
+#include "rclcpp/time.hpp"
+#include "rclcpp/type_adapter.hpp"
 
 namespace rviz_common
 {
